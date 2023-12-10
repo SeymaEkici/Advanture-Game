@@ -1,8 +1,11 @@
+import java.util.Scanner;
+
 public abstract class Location {
 
     private Player player;
     private String locationName;
     public abstract boolean onLocation();
+    public static Scanner sc = new Scanner(System.in);
 
     public Location(Player player, String locationName) {
         this.player = player;

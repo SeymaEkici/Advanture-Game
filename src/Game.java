@@ -14,31 +14,37 @@ public class Game {
         print("Oh dear " +playerName +", the game already start.");
         print("If you are smart enough you can complete and win your freedom to the real world. So do your best!");
 
+        print(" ");
         print("Here are the characters:");
+        print(" ");
         player.selectChar();
 
         Location location = null;
         while(true){
-            public void selectLoc(){
+            player.printInfo();
+            print(" ");
+            print("__________Locations__________");
+            print(" ");
+            print("1- Safe House");
+            print("2- Tool Store");
+            print(" ");
+            print("Where do you wanna go?");
+            int selectLoc = sc.nextInt();
 
-                System.out.println("Locations: ");
-                System.out.println("1- Safe House");
-                System.out.println("2- Tool Store");
+            switch (selectLoc) {
+                case 1:
+                    location = new SafeHouse(player);
+                    break;
+                case 2:
+                    location = new ToolStore(player);
+                    break;
+                default:
+                    location = new SafeHouse(player);
+            }
 
-                System.out.println("Where do you wanna go?");
-                int selectLoc = sc.nextInt();
-                switch (selectLoc) {
-                    case 1:
-                        location = new SafeHouse(player);
-                        break;
-                    case 2:
-                        location = new ToolStore(player);
-                        break;
-                    default:
-                        location = new SafeHouse(player);
-                }
-
-                location.onLocation();
+            if (!location.onLocation()){
+                print("GAME OVER!");
+                break;
             }
         }
 

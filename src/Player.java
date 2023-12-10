@@ -9,37 +9,49 @@ public class Player {
     private int gold;
     private String playerName;
     Scanner sc = new Scanner(System.in);
+    private Inventory inventory;
+
+    public Player(String playerName){
+        this.playerName = playerName;
+        this.inventory = new Inventory();
+    }
 
     public void selectChar(){
 
-        GameChar[] charList = {new Samurai(), new Archer(), new Knight()};
-
-        for (GameChar gameChar : charList) {
-            System.out.println(gameChar.getID() + "- " +gameChar.getCharacterName() +
-                    "\tHealth: "+ gameChar.getHealth() +
-                    "\tDamage: "+ gameChar.getDamage() +
-                    "\tGold: "+ gameChar.getGold());
+        for (GameChar gameChar: GameChar.chars()){
+            System.out.println(gameChar.getID() + "- " + gameChar.getCharacterName() +
+                    " <Damage: " + gameChar.getDamage() +
+                    " , gold: " + gameChar.getGold() + ">");
         }
 
         System.out.println("Now choose your character: ");
         int choice = sc.nextInt();
 
-        switch (choice){
-            case 1:
-                initPlayer(new Samurai());
+        GameChar selectedChar = null;
+        for (GameChar gameChar : GameChar.chars()) {
+            if (gameChar.getID() == choice) {
+                selectedChar = gameChar;
                 break;
-            case 2:
-                initPlayer(new Archer());
-                break;
-            case 3:
-                initPlayer(new Knight());
-                break;
-            default:
-                System.out.println("Enter the ID of character! Please try again.");
-                selectChar();
+            }
         }
 
-        System.out.println("Selected character is "+ getCharacterName()+ ". Good luck "+ getPlayerName()+ "!");
+        if (selectedChar != null) {
+            System.out.println("Selected character is " + selectedChar.getCharacterName() + ". Good luck " + getPlayerName() + "!");
+            initPlayer(selectedChar);
+        } else {
+            System.out.println("Invalid choice. Please select a valid character.");
+            selectChar();
+        }
+    }
+
+    public void printInfo(){
+        System.out.println(" ");
+        System.out.println("__________Character Info__________");
+        System.out.println(
+                "Weapon: " + this.getInventory().getWeapon().getName() +
+                "\t\tDamage: " + this.getDamage() +
+                "\t\tHealth: " + this.getHealth() +
+                "\t\tMoney: " + this.getGold());
     }
 
     public void initPlayer(GameChar gameChar){
@@ -48,10 +60,6 @@ public class Player {
         this.setDamage(gameChar.getDamage());
         this.setGold(gameChar.getGold());
         this.setID(gameChar.getID());
-    }
-
-    public Player(String playerName){
-        this.playerName = playerName;
     }
 
     public String getPlayerName() {
@@ -87,7 +95,7 @@ public class Player {
     }
 
     public int getDamage() {
-        return damage;
+        return damage + this.getInventory().getWeapon().getDamage();
     }
 
     public void setDamage(int damage) {
@@ -100,5 +108,13 @@ public class Player {
 
     public void setGold(int gold) {
         this.gold = gold;
+    }
+
+    public Inventory getInventory() {
+        return inventory;
+    }
+
+    public void setInventory(Inventory inventory) {
+        this.inventory = inventory;
     }
 }
