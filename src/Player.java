@@ -5,11 +5,12 @@ public class Player {
     private int ID;
     private String characterName;
     private int health;
+    private int originalHealth;
     private int damage;
     private int gold;
     private String playerName;
-    Scanner sc = new Scanner(System.in);
     private Inventory inventory;
+    Scanner sc = new Scanner(System.in);
 
     public Player(String playerName){
         this.playerName = playerName;
@@ -49,7 +50,7 @@ public class Player {
         System.out.println("__________Character Info__________");
         System.out.println(
                 "Weapon: " + this.getInventory().getWeapon().getName() +
-                "\t\tDamage: " + this.getDamage() +
+                "\t\tDamage: " + this.getTotalDamage() +
                 "\t\tArmor: " + this.getInventory().getArmor().getName() +
                 "\t\tBlock: " + this.getInventory().getArmor().getBlock() +
                 "\t\tHealth: " + this.getHealth() +
@@ -59,6 +60,7 @@ public class Player {
     public void initPlayer(GameChar gameChar){
         this.setCharacterName(gameChar.getCharacterName());
         this.setHealth(gameChar.getHealth());
+        this.setOriginalHealth(gameChar.getHealth());
         this.setDamage(gameChar.getDamage());
         this.setGold(gameChar.getGold());
         this.setID(gameChar.getID());
@@ -96,8 +98,11 @@ public class Player {
         this.health = health;
     }
 
-    public int getDamage() {
+    public int getTotalDamage(){
         return damage + this.getInventory().getWeapon().getDamage();
+    }
+    public int getDamage() {
+        return damage;
     }
 
     public void setDamage(int damage) {
@@ -118,5 +123,13 @@ public class Player {
 
     public void setInventory(Inventory inventory) {
         this.inventory = inventory;
+    }
+
+    public int getOriginalHealth() {
+        return originalHealth;
+    }
+
+    public void setOriginalHealth(int originalHealth) {
+        this.originalHealth = originalHealth;
     }
 }

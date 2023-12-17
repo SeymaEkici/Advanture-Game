@@ -27,6 +27,9 @@ public class Game {
             print(" ");
             print("1- Safe House");
             print("2- Tool Store");
+            print("3- Cave");
+            print("4- Forest");
+            print("5- River");
             print("0- Exit");
             print(" ");
             print("Where do you wanna go?");
@@ -41,6 +44,15 @@ public class Game {
                     break;
                 case 2:
                     location = new ToolStore(player);
+                    break;
+                case 3:
+                    location = new Cave(player);
+                    break;
+                case 4:
+                    location = new Forest(player);
+                    break;
+                case 5:
+                    location = new River(player);
                     break;
                 default:
                     location = new SafeHouse(player);
