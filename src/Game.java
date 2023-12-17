@@ -27,11 +27,15 @@ public class Game {
             print(" ");
             print("1- Safe House");
             print("2- Tool Store");
+            print("0- Exit");
             print(" ");
             print("Where do you wanna go?");
             int selectLoc = sc.nextInt();
 
             switch (selectLoc) {
+                case 0:
+                    location = null;
+                    break;
                 case 1:
                     location = new SafeHouse(player);
                     break;
@@ -40,6 +44,11 @@ public class Game {
                     break;
                 default:
                     location = new SafeHouse(player);
+            }
+
+            if (location == null){
+                print("You quit little freak!");
+                break;
             }
 
             if (!location.onLocation()){

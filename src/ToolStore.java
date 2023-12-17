@@ -9,30 +9,34 @@ public class ToolStore extends NormalLocation{
 
         print("__________Welcome to the store__________");
         print(" ");
-        print("1- Weapons");
-        print("2- Armors");
-        print("3- Exit");
-        print("Your choice: ");
-        int selectCase = sc.nextInt();
+        boolean showMenu = true;
+        while (showMenu){
+            print("1- Weapons");
+            print("2- Armors");
+            print("3- Exit");
+            print("Your choice: ");
+            int selectCase = sc.nextInt();
 
-        while (selectCase < 1 || selectCase > 3){
-            print("Invalid input, try again: ");
-            selectCase = sc.nextInt();
+            while (selectCase < 1 || selectCase > 3){
+                print("Invalid input, try again: ");
+                selectCase = sc.nextInt();
+            }
+
+            switch (selectCase){
+                case 1:
+                    printWeapon();
+                    buyWeapon();
+                    break;
+                case 2:
+                    printArmor();
+                    buyArmor();
+                    break;
+                case 3:
+                    print("Come and visit again dear :)");
+                    showMenu = false;
+                    break;
+            }
         }
-
-        switch (selectCase){
-            case 1:
-                printWeapon();
-                buyWeapon();
-                break;
-            case 2:
-                printArmor();
-                break;
-            case 3:
-                print("Come and visit again dear :)");
-                return true;
-        }
-
         return true;
     }
 
@@ -43,38 +47,70 @@ public class ToolStore extends NormalLocation{
         for (Weapon w: Weapon.weapons()){
             print(w.getID() + "- " + w.getName() + " <Cost: " + w.getCost() + " , Damage: " + w.getDamage() + ">");
         }
+        print("4- Exit");
     }
 
     public void buyWeapon(){
         print("Select your weapon:");
         int selectWeapon = sc.nextInt();
-        if (selectWeapon < 1 || selectWeapon >= Weapon.weapons().length +1){
-            print("Invalid input. Try again dear: ");
-            selectWeapon = sc.nextInt();
-        }
 
-        Weapon selectedWeapon = Weapon.getWeaponObjByID(selectWeapon);
-        if (selectedWeapon != null){
+        if(selectWeapon != 4){
+            if (selectWeapon < 1 || selectWeapon >= Weapon.weapons().length +2){
+                print("Invalid input. Try again dear: ");
+                selectWeapon = sc.nextInt();
+            }
 
-            if (selectedWeapon.getCost() > getPlayer().getGold()){
-                print("You are broke as hell haha you can not buy it :D");
+            Weapon selectedWeapon = Weapon.getWeaponObjByID(selectWeapon);
+            if (selectedWeapon != null){
 
-            } else {
-                print("You bought " +selectedWeapon.getName() + ", nice choose fighter!");
-                int balance = this.getPlayer().getGold() - selectedWeapon.getCost();
-                this.getPlayer().setGold(balance);
-                print("Remaining balance: " + this.getPlayer().getGold());
-                this.getPlayer().getInventory().setWeapon(selectedWeapon);
+                if (selectedWeapon.getCost() > getPlayer().getGold()){
+                    print("You are broke as hell haha you can not buy it :D");
+
+                } else {
+                    print("You bought " +selectedWeapon.getName() + ", nice choose fighter!");
+                    int balance = this.getPlayer().getGold() - selectedWeapon.getCost();
+                    this.getPlayer().setGold(balance);
+                    print("Remaining balance: " + this.getPlayer().getGold());
+                    this.getPlayer().getInventory().setWeapon(selectedWeapon);
+                }
             }
         }
     }
 
     public void printArmor(){
-
+        print("__________Armors__________");
+        print(" ");
+        for (Armor a: Armor.armors()){
+            print(a.getID() + "- " + a.getName() + " <Cost: " + a.getCost() + " , Block: " + a.getBlock() + ">");
+        }
+        print("4- Exit");
     }
 
-    public void menu(){
+    public void buyArmor(){
+        print("Select your armor: ");
+        int selectArmor = sc.nextInt();
 
+        if (selectArmor != 4){
+            if (selectArmor < 1 || selectArmor >= Weapon.weapons().length +1){
+                print("Invalid input. Try again dear: ");
+                selectArmor = sc.nextInt();
+            }
+
+            Armor selectedArmor = Armor.getArmorObjByID(selectArmor);
+            if (selectedArmor != null){
+
+                if (selectedArmor.getCost() > getPlayer().getGold()){
+                    print("You are broke as hell haha you can not buy it :D");
+
+                } else {
+                    print("You bought " +selectedArmor.getName() + ", nice choose fighter!");
+                    int balance = this.getPlayer().getGold() - selectedArmor.getCost();
+                    this.getPlayer().setGold(balance);
+                    print("Remaining balance: " + this.getPlayer().getGold());
+                    this.getPlayer().getInventory().setArmor(selectedArmor);
+                }
+            }
+        }
     }
 
     public void print(String text){

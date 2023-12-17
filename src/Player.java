@@ -50,6 +50,8 @@ public class Player {
         System.out.println(
                 "Weapon: " + this.getInventory().getWeapon().getName() +
                 "\t\tDamage: " + this.getDamage() +
+                "\t\tArmor: " + this.getInventory().getArmor().getName() +
+                "\t\tBlock: " + this.getInventory().getArmor().getBlock() +
                 "\t\tHealth: " + this.getHealth() +
                 "\t\tMoney: " + this.getGold());
     }
