@@ -5,16 +5,24 @@ public abstract class BattleLocation extends Location{
     private Obstacle obstacle;
     private String reward;
     private int maxObstacle;
+    private boolean visited;
 
     public BattleLocation(Player player, String locationName, Obstacle obstacle, String reward, int maxObstacle) {
         super(player, locationName);
         this.obstacle = obstacle;
         this.reward = reward;
         this.maxObstacle = maxObstacle;
+        this.visited = false;
     }
 
     @Override
     public boolean onLocation() {
+
+        if (checkRewardMatch()) {
+            print("Slow dude, you've already been here. There are no more enemies.");
+            return true;
+        }
+
         int obsNum = this.randomObstacleNum();
 
         print("You are at " + this.getLocationName() + " now.");
@@ -23,9 +31,13 @@ public abstract class BattleLocation extends Location{
         String selectCase = sc.nextLine().toUpperCase();
 
         if (selectCase.equals("B") && combat(obsNum)){
-            print("You defeated all enemies at " + this.getLocationName() + "!");
             return true;
-        } else {
+        }
+        else if (selectCase.equals("R")){
+            print("You really gave up huh?!");
+            return true;
+        }
+        else {
             return false;
         }
     }
@@ -42,23 +54,51 @@ public abstract class BattleLocation extends Location{
                 String selectCombat = sc.nextLine().toUpperCase();
 
                 if (selectCombat.equals("H")){
-                    print("You hit first!");
-                    this.getObstacle().setHealth(this.getObstacle().getHealth() - this.getPlayer().getTotalDamage());
-                    afterHit();
 
-                    if (this.getObstacle().getHealth() > 0){
+                    if (firstDamageFromPlayer()) {
                         print(" ");
-                        print(this.getObstacle().getObstacleName() + " hit you!");
+                        print("You hit first!");
+                        this.getObstacle().setHealth(this.getObstacle().getHealth() - this.getPlayer().getTotalDamage());
+                        afterHit();
 
+                        if (this.getObstacle().getHealth() > 0) {
+                            print(" ");
+                            print(this.getObstacle().getObstacleName() + " hit you!");
+
+                            int obstacleDamage = this.getObstacle().getDamage() - this.getPlayer().getInventory().getArmor().getBlock();
+                            if (obstacleDamage < 0) {
+                                obstacleDamage = 0;
+                            }
+                            this.getPlayer().setHealth(this.getPlayer().getHealth() - obstacleDamage);
+                            afterHit();
+                        }
+                    }
+                    else {
+                        print(" ");
+                        print(this.getObstacle().getObstacleName() + " hit first!");
                         int obstacleDamage = this.getObstacle().getDamage() - this.getPlayer().getInventory().getArmor().getBlock();
-                        if (obstacleDamage < 0){
+                        if (obstacleDamage < 0) {
                             obstacleDamage = 0;
                         }
                         this.getPlayer().setHealth(this.getPlayer().getHealth() - obstacleDamage);
                         afterHit();
+
+                        if (this.getPlayer().getHealth() > 0){
+                            print("It's your turn to hit!");
+                            this.getObstacle().setHealth(this.getObstacle().getHealth() - this.getPlayer().getTotalDamage());
+                            afterHit();
+                        }
+                        else {
+                            return false;
+                        }
                     }
 
-                } else {
+                } else if(selectCombat.equals("M")){
+                    print("You really gave up huh?!");
+                    return true;
+                }
+
+                else {
                     return false;
                 }
             }
@@ -76,7 +116,40 @@ public abstract class BattleLocation extends Location{
                 return false;
             }
         }
+        print("You defeated all enemies at " + this.getLocationName() + "!");
+        returnReward();
         return true;
+    }
+
+    public void returnReward(){
+        Inventory playerInventory = getPlayer().getInventory();
+
+        if (this.reward.equals("Food")) {
+            playerInventory.setFood(true);
+            print("Congrats, you found the Food!");
+        } else if (this.reward.equals("Firewood")) {
+            playerInventory.setFirewood(true);
+            print("Congrats, you found the Firewood!");
+        } else if (this.reward.equals("Water")) {
+            playerInventory.setWater(true);
+            print("Congrats, you found the Water!");
+        } else if (this.reward.equals("SomeReward")){
+            ((Mine) this).setReward();
+        }
+    }
+
+    private boolean checkRewardMatch() {
+        Inventory playerInventory = getPlayer().getInventory();
+
+        if (this.reward.equals("Food") && playerInventory.isFood()) {
+            return true;
+        } else if (this.reward.equals("Firewood") && playerInventory.isFirewood()) {
+            return true;
+        } else if (this.reward.equals("Water") && playerInventory.isWater()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public void afterHit(){
@@ -108,6 +181,11 @@ public abstract class BattleLocation extends Location{
     public int randomObstacleNum(){
         Random random = new Random();
         return random.nextInt(this.getMaxObstacle()) + 1;
+    }
+
+    public boolean firstDamageFromPlayer(){
+        Random random = new Random();
+        return random.nextInt(2) == 1;
     }
 
     public Obstacle getObstacle() {
